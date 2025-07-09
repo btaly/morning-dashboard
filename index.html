@@ -2,75 +2,136 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Morning Dashboard</title>
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #121212;
-            color: #f0f0f0;
-        }
-        header {
-            background-color: #1e1e1e;
-            padding: 20px;
-            text-align: center;
-            font-size: 2rem;
-            border-bottom: 1px solid #333;
-        }
-        section {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            padding: 20px;
-            gap: 20px;
-        }
-        iframe {
-            border: none;
-            width: 100%;
-            max-width: 600px;
-            height: 500px;
-            background-color: #222;
-        }
-        .card {
-            background-color: #1e1e1e;
-            border: 1px solid #333;
-            border-radius: 8px;
-            overflow: hidden;
-            width: 100%;
-            max-width: 600px;
-        }
-        .card h2 {
-            margin: 0;
-            padding: 10px;
-            background-color: #2c2c2c;
-            border-bottom: 1px solid #333;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Morning Dashboard</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: #f0f0f0;
+    }
+    header {
+      background-color: #1e1e1e;
+      padding: 20px;
+      text-align: center;
+      font-size: 2rem;
+      border-bottom: 1px solid #333;
+    }
+    section {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding: 20px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .card {
+      background-color: #1e1e1e;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 10px 20px;
+    }
+    .card h2 {
+      margin-top: 0;
+      border-bottom: 1px solid #333;
+      padding-bottom: 5px;
+    }
+    iframe {
+      border: none;
+      width: 100%;
+      height: 400px;
+      border-radius: 8px;
+    }
+    ul {
+      padding-left: 20px;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    a {
+      color: #9cd3ff;
+      text-decoration: none;
+    }
+    .external-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .external-links a {
+      background-color: #2c2c2c;
+      padding: 10px 15px;
+      border-radius: 6px;
+      border: 1px solid #444;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
-    <header>☀️ Morning Dashboard</header>
-    <section>
-        <div class="card">
-            <h2>Guyton, GA Weather</h2>
-            <iframe src="https://www.wunderground.com/forecast/us/ga/guyton/32.19,-81.33?cm_ven=localwx_10day"></iframe>
-        </div>
-        <div class="card">
-            <h2>The Verge</h2>
-            <iframe src="https://www.theverge.com"></iframe>
-        </div>
-        <div class="card">
-            <h2>Techmeme</h2>
-            <iframe src="https://www.techmeme.com"></iframe>
-        </div>
-        <div class="card">
-            <h2>Business Insider</h2>
-            <iframe src="https://www.businessinsider.com"></iframe>
-        </div>
-        <div class="card">
-            <h2>Fortune</h2>
-            <iframe src="https://fortune.com"></iframe>
-        </div>
-    </section>
+  <header>☀️ Morning Dashboard</header>
+  <section>
+    <div class="card">
+      <h2>Guyton, GA Weather</h2>
+      <iframe src="https://www.wunderground.com/forecast/us/ga/guyton/32.19,-81.33?cm_ven=localwx_10day"></iframe>
+    </div>
+
+    <div class="card">
+      <h2>The Verge - Headlines</h2>
+      <ul id="verge-headlines"></ul>
+      <div class="external-links">
+        <a href="https://www.theverge.com" target="_blank">Visit The Verge</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Techmeme - Headlines</h2>
+      <ul id="techmeme-headlines"></ul>
+      <div class="external-links">
+        <a href="https://www.techmeme.com" target="_blank">Visit Techmeme</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Business Insider - Headlines</h2>
+      <ul id="bi-headlines"></ul>
+      <div class="external-links">
+        <a href="https://www.businessinsider.com" target="_blank">Visit Business Insider</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Fortune - Headlines</h2>
+      <ul id="fortune-headlines"></ul>
+      <div class="external-links">
+        <a href="https://fortune.com" target="_blank">Visit Fortune</a>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    async function loadRSS(url, containerId, limit = 5) {
+      try {
+        const apiURL = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`;
+        const res = await fetch(apiURL);
+        const data = await res.json();
+        const list = document.getElementById(containerId);
+        data.items.slice(0, limit).forEach(item => {
+          const li = document.createElement('li');
+          li.innerHTML = `<a href="\${item.link}" target="_blank">\${item.title}</a>`;
+          list.appendChild(li);
+        });
+      } catch (error) {
+        console.error('Error loading RSS:', error);
+        document.getElementById(containerId).innerHTML = "<li>Unable to load headlines.</li>";
+      }
+    }
+
+    loadRSS('https://www.theverge.com/rss/index.xml', 'verge-headlines');
+    loadRSS('https://www.techmeme.com/feed.xml', 'techmeme-headlines');
+    loadRSS('https://www.businessinsider.com/rss', 'bi-headlines');
+    loadRSS('https://fortune.com/feed', 'fortune-headlines');
+  </script>
 </body>
 </html>
