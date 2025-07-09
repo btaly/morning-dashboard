@@ -1,0 +1,76 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Morning Dashboard</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #f0f0f0;
+        }
+        header {
+            background-color: #1e1e1e;
+            padding: 20px;
+            text-align: center;
+            font-size: 2rem;
+            border-bottom: 1px solid #333;
+        }
+        section {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 20px;
+            gap: 20px;
+        }
+        iframe {
+            border: none;
+            width: 100%;
+            max-width: 600px;
+            height: 500px;
+            background-color: #222;
+        }
+        .card {
+            background-color: #1e1e1e;
+            border: 1px solid #333;
+            border-radius: 8px;
+            overflow: hidden;
+            width: 100%;
+            max-width: 600px;
+        }
+        .card h2 {
+            margin: 0;
+            padding: 10px;
+            background-color: #2c2c2c;
+            border-bottom: 1px solid #333;
+        }
+    </style>
+</head>
+<body>
+    <header>☀️ Morning Dashboard</header>
+    <section>
+        <div class="card">
+            <h2>Guyton, GA Weather</h2>
+            <iframe src="https://www.wunderground.com/forecast/us/ga/guyton/32.19,-81.33?cm_ven=localwx_10day"></iframe>
+        </div>
+        <div class="card">
+            <h2>The Verge</h2>
+            <iframe src="https://www.theverge.com"></iframe>
+        </div>
+        <div class="card">
+            <h2>Techmeme</h2>
+            <iframe src="https://www.techmeme.com"></iframe>
+        </div>
+        <div class="card">
+            <h2>Business Insider</h2>
+            <iframe src="https://www.businessinsider.com"></iframe>
+        </div>
+        <div class="card">
+            <h2>Fortune</h2>
+            <iframe src="https://fortune.com"></iframe>
+        </div>
+    </section>
+</body>
+</html>
