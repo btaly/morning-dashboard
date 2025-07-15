@@ -1,120 +1,23 @@
-
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Morning Dashboard</title>
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #121212;
-            color: #f0f0f0;
-        }
-        header {
-            background-color: #1e1e1e;
-            padding: 20px;
-            text-align: center;
-            font-size: 2rem;
-            border-bottom: 1px solid #333;
-        }
-        section {
-            padding: 20px;
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-        }
-        .card {
-            background-color: #1e1e1e;
-            border: 1px solid #333;
-            border-radius: 8px;
-            padding: 15px;
-        }
-        .card h2 {
-            margin-top: 0;
-            border-bottom: 1px solid #333;
-            padding-bottom: 8px;
-        }
-        iframe.widget {
-            width: 100%;
-            height: 400px;
-            border: none;
-        }
-        .quick-links {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 10px;
-        }
-        .quick-links a {
-            background-color: #2c2c2c;
-            padding: 10px 15px;
-            border-radius: 6px;
-            text-decoration: none;
-            color: #f0f0f0;
-            border: 1px solid #333;
-        }
-        .quick-links a:hover {
-            background-color: #3d3d3d;
-        }
-    </style>
-</head>
-<body>
-    <header>☀️ Morning Dashboard</header>
-    <section>
-        <div class="card">
-            <h2>Daily Stoic Quote</h2>
-            <blockquote id="stoic-quote" style="font-style: italic; font-size: 1.1rem;"></blockquote>
-        </div>
-        <div class="card">
-            <h2>Guyton, GA Weather</h2>
-            <p><a href="https://www.wunderground.com/weather/us/ga/guyton" target="_blank" style="color:#00bcd4;">View full weather report</a></p>
-        </div>
-
-        <div class="card">
-            <h2>The Verge - Headlines</h2>
-            <iframe class="widget" src="https://rss.app/embed/v1/wall/1uSmh3NLqN8wIVcA" loading="lazy"></iframe>
-        </div>
-
-        <div class="card">
-            <h2>Techmeme - Headlines</h2>
-            <iframe class="widget" src="https://rss.app/embed/v1/wall/nRrzDq8tuhZrW7UI" loading="lazy"></iframe>
-        </div>
-
-        <div class="card">
-            <h2>Business Insider - Headlines</h2>
-            <iframe class="widget" src="https://rss.app/embed/v1/wall/o9I7s8UshnkQ4i6M" loading="lazy"></iframe>
-        </div>
-
-        <div class="card">
-            <h2>Fortune - Headlines</h2>
-            <iframe class="widget" src="https://rss.app/embed/v1/wall/5Ac1tqCJ8rPrSC9e" loading="lazy"></iframe>
-        </div>
-
-        <div class="card">
-            <h2>Quick Links</h2>
-            <div class="quick-links">
-                <a href="https://www.theverge.com" target="_blank">The Verge</a>
-                <a href="https://www.techmeme.com" target="_blank">Techmeme</a>
-                <a href="https://www.businessinsider.com" target="_blank">Business Insider</a>
-                <a href="https://fortune.com" target="_blank">Fortune</a>
-                <a href="https://www.wunderground.com/weather/us/ga/guyton" target="_blank">Weather</a>
-            </div>
-        </div>
-    </section>
-    <script>
-        const stoicQuotes = [
-            "You have power over your mind — not outside events. Realize this, and you will find strength. — Marcus Aurelius",
-            "It is not death that a man should fear, but never beginning to live. — Marcus Aurelius",
-            "We suffer more often in imagination than in reality. — Seneca",
-            "He who is brave is free. — Seneca",
-            "How long are you going to wait before you demand the best for yourself? — Epictetus",
-            "Man conquers the world by conquering himself. — Zeno of Citium"
-        ];
-        const quote = stoicQuotes[Math.floor(Math.random() * stoicQuotes.length)];
-        document.addEventListener("DOMContentLoaded", () => {
-            document.getElementById("stoic-quote").textContent = quote;
-        });
-    </script>
-</body>
-</html>
+<html lang="en"><head>
+<meta charset="UTF-8"><title>Morning Dashboard</title>
+<style>
+body{margin:0;font-family:Arial,sans-serif;background:#121212;color:#f0f0f0;}
+header{background:#1e1e1e;padding:20px;text-align:center;font-size:2rem;border-bottom:1px solid #333;}
+section{padding:20px;display:grid;grid-template-columns:1fr;gap:20px;}
+.card{background:#1e1e1e;border:1px solid #333;border-radius:8px;padding:15px;}
+.card h2{margin-top:0;border-bottom:1px solid #333;padding-bottom:8px;}
+ul{padding-left:1rem;}li{margin-bottom:8px;}
+a{color:#00bcd4;text-decoration:none;}a:hover{text-decoration:underline;}
+.quick-links{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;}
+.quick-links a{background:#2c2c2c;padding:10px 15px;border-radius:6px;text-decoration:none;color:#f0f0f0;border:1px solid #333;}
+.quick-links a:hover{background:#3d3d3d;}
+</style></head><body>
+<header>☀️ Morning Dashboard</header><section>
+<div class="card"><h2>Daily Stoic Quote</h2><blockquote style="font-style:italic;font-size:1.1rem;">We suffer more often in imagination than in reality. — Seneca</blockquote></div><div class="card"><h2>Guyton, GA Weather</h2><p><a href="https://www.wunderground.com/weather/us/ga/guyton" target="_blank">View full weather report</a></p></div><div class="card"><h2>The Verge - Headlines</h2><ul><li><a href="https://www.theverge.com/news/707347/uber-baidu-robotaxi-deal-autonomous-ridehail" target="_blank">Uber is close to completing its quest to become the ultimate robotaxi app</a></li><li><a href="https://www.theverge.com/cyber-security/707116/iceblock-data-privacy-security-android-version" target="_blank">ICEBlock isn&amp;#8217;t &amp;#8216;completely anonymous&amp;#8217;</a></li><li><a href="https://www.theverge.com/news/707382/ugreen-magflow-magnetic-power-bank-wireless-charging-qi" target="_blank">Faster Qi2.2 wireless power banks are on the way</a></li><li><a href="https://www.theverge.com/tech/707400/fitbit-charge-6-kindle-paperwhite-refurbished-deal-sale" target="_blank">Fitbit’s Charge 6 fitness tracker is at its lowest price ever at Walmart</a></li><li><a href="https://www.theverge.com/news/707075/roblox-creators-licensing-netflix-stranger-things-lionsgate-twilight" target="_blank">Roblox creators can now make their own Stranger Things and Twilight games</a></li></ul></div><div class="card"><h2>Techmeme - Headlines</h2><ul><li><a href="http://www.techmeme.com/250715/p17#a250715p17" target="_blank">OpenEvidence, whose free AI search tool has signed up 40% of doctors in the US, raised $210M led by GV at a $3.5B valuation, up from $1B in February (Amy Feldman/Forbes)</a></li><li><a href="http://www.techmeme.com/250715/p16#a250715p16" target="_blank">Apple seems to be working on adding CUDA support to open-source ML framework MLX, which may mean that code developed using MLX would work with CUDA (Malcolm Owen/AppleInsider)</a></li><li><a href="http://www.techmeme.com/250715/p15#a250715p15" target="_blank">Mistral releases Voxtral, its first open source AI audio model family, and says its API transcription offerings are cheaper than models from OpenAI and Google (Rebecca Bellan/TechCrunch)</a></li><li><a href="http://www.techmeme.com/250715/p14#a250715p14" target="_blank">Sources: the US DOJ and CFTC ended a pair of investigations into crypto betting platform Polymarket that started in the waning days of the Biden administration (Bloomberg)</a></li><li><a href="http://www.techmeme.com/250715/p13#a250715p13" target="_blank">Uber and Baidu announce a multiyear partnership to launch robotaxis in markets outside the US and mainland China, starting in Asia and the Middle East in 2025 (Natalie Lung/Bloomberg)</a></li></ul></div><div class="card"><h2>Business Insider - Headlines</h2><ul><li><a href="https://www.businessinsider.com/elon-musk-north-star-ai-tesla-xai-spacex-investments-2025-7" target="_blank">Elon Musk&#x27;s North Star is becoming increasingly clear</a></li><li><a href="https://www.businessinsider.com/how-us-navy-addressing-readiness-issue-prepared-for-china-war-2025-7" target="_blank">The US Navy needs a big fix to get ready for a war with China. Here&#x27;s the top admiral&#x27;s plan.</a></li><li><a href="https://www.businessinsider.com/ringling-mansion-tour-photos-ca-dzan-florida-2025-7" target="_blank">The mansion the circus built: See inside the 56-room Florida home built by the Ringling family a century ago</a></li><li><a href="https://www.businessinsider.com/mark-zuckerberg-ai-researchers-want-gpus-compute-few-direct-reports-2025-7" target="_blank">Mark Zuckerberg says AI researchers want 2 things apart from money</a></li><li><a href="https://www.businessinsider.com/88-year-old-grandma-lives-fulfilled-life-secret-to-happiness-2025-7" target="_blank">My 88-year-old grandma lives the most fulfilled life of anyone I know. Her &#x27;secret to success&#x27; is wildly simple.</a></li></ul></div><div class="card"><h2>Fortune - Headlines</h2><ul><li><a href="https://fortune.com/2025/07/15/multimillionaire-barbara-corcoran-shark-tank-real-estate-employees-crazy-perks-bentley-elephant-picnic/" target="_blank">Barbara Corcoran shares the ‘crazy’ work perks she’s offered her team including a free Bentley, mid-week picnics, and a 5,000 pound elephant ride</a></li><li><a href="https://fortune.com/2025/07/09/no-tax-on-tips-overtime-explained-trump-budget/" target="_blank">The rules for paying taxes on tips and overtime are changing thanks to Trump’s Big Beautiful Bill. Here’s what to expect</a></li><li><a href="https://fortune.com/2025/07/15/buyers-market-zillow-housing-july-2025/" target="_blank">Looking to buy a home? Zillow says the market is better than it’s been for years</a></li><li><a href="https://fortune.com/2025/07/15/recession-stagflation-carter-reagan-moment-economist-mohamed-el-erian/" target="_blank">Top economist Mohamed El-Erian says Trump’s in a ‘question mark’ moment—and it could go the way of Ronald Reagan or Jimmy Carter</a></li><li><a href="https://fortune.com/2025/07/14/gen-z-baby-boomers-communal-living-housing-market/" target="_blank">Gen Z can’t afford a house on their own—so they’re buying with friends and family</a></li></ul></div><div class="card"><h2>Quick Links</h2><div class="quick-links">
+<a href="https://www.theverge.com" target="_blank">The Verge</a>
+<a href="https://www.techmeme.com" target="_blank">Techmeme</a>
+<a href="https://www.businessinsider.com" target="_blank">Business Insider</a>
+<a href="https://fortune.com" target="_blank">Fortune</a>
+<a href="https://www.wunderground.com/weather/us/ga/guyton" target="_blank">Weather</a>
+</div></div></section></body></html>
