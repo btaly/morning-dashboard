@@ -1,45 +1,174 @@
-name: Update Morning Dashboard
+#!/usr/bin/env python3
+"""
+Build a static “morning dashboard” HTML file.
 
-# Grant the default GITHUB_TOKEN permission to push commits
-permissions:
-  contents: write          # allow commit & push
+ • Pulls a 6‑period forecast for Guyton GA from the U.S. National Weather Service
+ • Grabs top‑five RSS headlines from The Verge, Techmeme, Business Insider,
+   and Fortune
+ • Inserts a random Stoic quote
+ • Writes index.html (overwriting the old one)
 
-on:
-  # run every day at 06:00 AM Eastern (10:00 UTC)
-  schedule:
-    - cron: "0 10 * * *"
-  # manual trigger button in the Actions tab
-  workflow_dispatch:
+No API keys required.  Designed to run in GitHub Actions.
+"""
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
+import random
+import html
+import feedparser
+import requests
 
-    steps:
-      # 1 – check out your repo
-      - name: Checkout repository
-        uses: actions/checkout@v4
+# ─────────────────────────────────────────────────────────────
+# CONFIG  ─ feel free to customize
+# ─────────────────────────────────────────────────────────────
+FEEDS = {
+    "The Verge": "https://www.theverge.com/rss/index.xml",
+    "Techmeme": "https://www.techmeme.com/feed.xml",
+    "Business Insider": "https://www.businessinsider.com/rss",
+    "Fortune": "https://fortune.com/feed",
+}
 
-      # 2 – set up Python
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.x"
+STOIC_QUOTES = [
+    "You have power over your mind — not outside events. Realize this, and you will find strength. — Marcus Aurelius",
+    "It is not death that a man should fear, but never beginning to live. — Marcus Aurelius",
+    "We suffer more often in imagination than in reality. — Seneca",
+    "He who is brave is free. — Seneca",
+    "How long are you going to wait before you demand the best for yourself? — Epictetus",
+    "Man conquers the world by conquering himself. — Zeno of Citium",
+]
 
-      # 3 – install feedparser (RSS library)
-      - name: Install dependencies
-        run: pip install feedparser
+LAT, LON = 32.19, -81.33  # Guyton GA
+USER_AGENT = "MorningDashboard (github‑actions)"
 
-      # 4 – generate a fresh index.html
-      - name: Generate dashboard
-        run: python index_generator.py
+# ─────────────────────────────────────────────────────────────
+# WEATHER BLOCK
+# ─────────────────────────────────────────────────────────────
+def get_nws_periods(lat: float, lon: float, num_periods: int = 6):
+    """Return list of NWS forecast 'period' dicts (may be empty on error)."""
+    try:
+        meta = requests.get(
+            f"https://api.weather.gov/points/{lat},{lon}",
+            timeout=10,
+            headers={"User-Agent": USER_AGENT},
+        ).json()
+        forecast_url = meta["properties"]["forecast"]
+        periods = requests.get(
+            forecast_url, timeout=10, headers={"User-Agent": USER_AGENT}
+        ).json()["properties"]["periods"][:num_periods]
+        return periods
+    except Exception:
+        return []
 
-      # 5 – commit & push any changes
-      - name: Commit and push
-        run: |
-          git config --global user.name  "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add index.html
-          git commit -m "Auto‑update morning dashboard" || echo "Nothing to commit"
-          # push back to the same branch this workflow is running on
-          git push origin HEAD:${{ github.ref_name }}
+
+def build_weather_html(periods):
+    """Return a <div class='card'>… forecast table block."""
+    if not periods:
+        return (
+            '<div class="card"><h2>Guyton, GA Forecast</h2>'
+            '<p>Weather unavailable.</p></div>'
+        )
+
+    rows = []
+    for p in periods:
+        name = html.escape(p["name"])
+        temp = f'{p["temperature"]}°{p["temperatureUnit"]}'
+        short = html.escape(p["shortForecast"])
+        icon = p["icon"]  # 32‑px icon URL
+        rows.append(
+            f"<tr><td>{name}</td>"
+            f'<td><img src="{icon}" width="32" alt=""></td>'
+            f"<td>{temp}</td><td>{short}</td></tr>"
+        )
+
+    return (
+        '<div class="card"><h2>Guyton, GA Forecast</h2>'
+        '<table style="width:100%;font-size:0.9rem;">'
+        + "".join(rows)
+        + "</table></div>"
+    )
+
+
+# ─────────────────────────────────────────────────────────────
+# RSS FEED BLOCKS
+# ─────────────────────────────────────────────────────────────
+def build_feed_blocks():
+    blocks = []
+    for name, url in FEEDS.items():
+        d = feedparser.parse(url)
+        entries = d.entries[:5]
+        items_html = "".join(
+            f'<li><a href="{html.escape(e.link)}" target="_blank">'
+            f"{html.escape(e.title)}</a></li>"
+            for e in entries
+        )
+        block = (
+            '<div class="card">'
+            f"<h2>{html.escape(name)} - Headlines</h2>"
+            f"<ul>{items_html}</ul></div>"
+        )
+        blocks.append(block)
+    return "".join(blocks)
+
+
+# ─────────────────────────────────────────────────────────────
+# BUILD ENTIRE DASHBOARD
+# ─────────────────────────────────────────────────────────────
+def build_dashboard() -> str:
+    """Return full HTML for the dashboard."""
+    parts = []
+
+    # HTML head & styles
+    parts.append(
+        """<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><title>Morning Dashboard</title>
+<style>
+body{margin:0;font-family:Arial,sans-serif;background:#121212;color:#f0f0f0;}
+header{background:#1e1e1e;padding:20px;text-align:center;font-size:2rem;border-bottom:1px solid #333;}
+section{padding:20px;display:grid;grid-template-columns:1fr;gap:20px;}
+.card{background:#1e1e1e;border:1px solid #333;border-radius:8px;padding:15px;}
+.card h2{margin-top:0;border-bottom:1px solid #333;padding-bottom:8px;}
+ul{padding-left:1rem;}li{margin-bottom:8px;}
+a{color:#00bcd4;text-decoration:none;}a:hover{text-decoration:underline;}
+.quick-links{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;}
+.quick-links a{background:#2c2c2c;padding:10px 15px;border-radius:6px;text-decoration:none;color:#f0f0f0;border:1px solid #333;}
+.quick-links a:hover{background:#3d3d3d;}
+</style></head><body>
+<header>☀️ Morning Dashboard</header><section>
+"""
+    )
+
+    # Stoic quote block
+    quote = html.escape(random.choice(STOIC_QUOTES))
+    parts.append(
+        '<div class="card"><h2>Daily Stoic Quote</h2>'
+        f'<blockquote style="font-style:italic;font-size:1.1rem;">{quote}</blockquote></div>'
+    )
+
+    # Weather card
+    periods = get_nws_periods(LAT, LON)
+    parts.append(build_weather_html(periods))
+
+    # News feed cards
+    parts.append(build_feed_blocks())
+
+    # Quick links
+    parts.append(
+        """<div class="card"><h2>Quick Links</h2><div class="quick-links">
+<a href="https://www.theverge.com" target="_blank">The Verge</a>
+<a href="https://www.techmeme.com" target="_blank">Techmeme</a>
+<a href="https://www.businessinsider.com" target="_blank">Business Insider</a>
+<a href="https://fortune.com" target="_blank">Fortune</a>
+<a href="https://www.wunderground.com/weather/us/ga/guyton" target="_blank">Weather</a>
+</div></div>"""
+    )
+
+    parts.append("</section></body></html>")
+    return "".join(parts)
+
+
+# ─────────────────────────────────────────────────────────────
+# MAIN
+# ─────────────────────────────────────────────────────────────
+if __name__ == "__main__":
+    with open("index.html", "w", encoding="utf-8") as f:
+        f.write(build_dashboard())
+    print("index.html generated ✔")
